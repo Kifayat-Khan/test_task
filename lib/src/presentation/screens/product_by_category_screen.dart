@@ -18,6 +18,7 @@ class ProductByCategoryScreen extends StatelessWidget {
       child: Scaffold(
         appBar: SearchFieldAppBar(
           title: category,
+          isSearchEnable: true,
           onTapBack: () {
             context.read<FetchDataCubit>().fetchCategory();
           },

@@ -20,6 +20,7 @@ class HomeScreen extends StatelessWidget {
         return Scaffold(
           appBar: SearchFieldAppBar(
             title: tab,
+            isSearchEnable: tab != HomeTabs.profile,
             isBackVisible: false,
           ),
           body: tab == HomeTabs.category

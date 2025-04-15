@@ -8,11 +8,13 @@ class SearchFieldAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final VoidCallback? onTapBack;
   final bool isBackVisible;
+  final bool isSearchEnable;
   const SearchFieldAppBar({
     super.key,
     required this.title,
     this.onTapBack,
     this.isBackVisible = true,
+    required this.isSearchEnable,
   });
 
   @override
@@ -44,10 +46,12 @@ class SearchFieldAppBar extends StatelessWidget implements PreferredSizeWidget {
           SizedBox(height: 10), // Spacing between title and search bar
         ],
       ),
-      bottom: PreferredSize(
-        preferredSize: preferredSize,
-        child: SearchField(),
-      ),
+      bottom: isSearchEnable
+          ? PreferredSize(
+              preferredSize: preferredSize,
+              child: SearchField(),
+            )
+          : null,
       centerTitle: true,
       toolbarHeight: 120, // Height to accommodate search bar
     );
