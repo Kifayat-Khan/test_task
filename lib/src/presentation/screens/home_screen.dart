@@ -18,12 +18,10 @@ class HomeScreen extends StatelessWidget {
       builder: (context, state) {
         final tab = (state as HomeTab).tab;
         return Scaffold(
-          appBar: tab != HomeTabs.profile
-              ? SearchFieldAppBar(
-                  title: tab,
-                  isBackVisible: false,
-                )
-              : null,
+          appBar: SearchFieldAppBar(
+            title: tab,
+            isBackVisible: false,
+          ),
           body: tab == HomeTabs.category
               ? Category()
               : tab == HomeTabs.favorites
