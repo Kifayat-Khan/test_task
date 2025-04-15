@@ -1,0 +1,2 @@
+/Volumes/MacOSX2/Projects/My Projects/interveiw_task/test_task/android/app/.cxx/RelWithDebInfo/626x6v4o/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Volumes/MacOSX2/Projects/My Projects/interveiw_task/test_task/android/app/.cxx/RelWithDebInfo/626x6v4o/armeabi-v7a/CMakeFiles/rebuild_cache.dir

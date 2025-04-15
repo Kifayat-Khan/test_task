@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:test_task/src/core/common/search_cubit/search_cubit.dart';
 import 'package:test_task/src/core/common/widget/error_widget.dart';
 import 'package:test_task/init_dependency.dart';
 import 'package:test_task/src/core/theme/app_themes.dart';
+import 'package:test_task/src/presentation/cubits/favorite_cubit/favorite_cubit.dart';
 import 'package:test_task/src/presentation/cubits/fetch_data_cubit/fetch_data_cubit.dart';
 import 'package:test_task/src/presentation/cubits/home_tab_cubit/home_tab_cubit.dart';
 import 'package:test_task/src/presentation/screens/home_screen.dart';
@@ -28,6 +30,12 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => serviceLocator<FetchDataCubit>(),
+        ),
+        BlocProvider(
+          create: (context) => serviceLocator<FavoriteCubit>(),
+        ),
+        BlocProvider(
+          create: (context) => serviceLocator<SearchCubit>(),
         ),
       ],
       child: MaterialApp(

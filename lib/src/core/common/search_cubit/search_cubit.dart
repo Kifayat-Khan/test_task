@@ -4,13 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'search_state.dart';
 
 class SearchCubit extends Cubit<SearchState> {
-  SearchCubit() : super(SearchInitial());
+  SearchCubit() : super(Searched(searchText: ''));
 
-  void search() {
-    emit(Searched());
+  void search(String text) {
+    emit(Searched(searchText: text));
   }
 
   void cancelSearch() {
-    emit(SearchInitial());
+    emit(Searched(searchText: ''));
   }
 }

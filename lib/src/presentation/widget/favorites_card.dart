@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:test_task/src/core/common/widget/app_text.dart';
+import 'package:test_task/src/core/common/widget/network_image_widget.dart';
 import 'package:test_task/src/core/theme/app_pallet.dart';
+import 'package:test_task/src/data/model/product_model.dart';
+import 'package:test_task/src/domain/entity/product_entity.dart';
+import 'package:test_task/src/presentation/cubits/favorite_cubit/favorite_cubit.dart';
 import 'package:test_task/src/presentation/widget/rate_widget.dart';
 
 class FavoritesCard extends StatelessWidget {
-  const FavoritesCard({super.key});
+  final ProductEntity productEntity;
+  const FavoritesCard({
+    super.key,
+    required this.productEntity,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +39,17 @@ class FavoritesCard extends StatelessWidget {
         title: Row(
           children: [
             //--image
+            // ClipRRect(
+            //     borderRadius:
+            //         BorderRadius.vertical(bottom: Radius.circular(12)),
+            //     child: NetworkImageWidget(
+            //       imageUrl: productEntity.thumbnail!,
+            //       width: 80,
+            //       height: 80,
+            //       fit: BoxFit.contain,
+            //     )
+            //     ),
+
             Container(
               width: 80,
               height: 80,
@@ -37,24 +57,30 @@ class FavoritesCard extends StatelessWidget {
               padding: EdgeInsets.zero,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                image: DecorationImage(
-                  scale: 8,
-                  image: AssetImage('assets/svg_icons/test.png'),
-                  fit: BoxFit.cover,
-                ),
+                // image: DecorationImage(
+                //   scale: 8,
+                //   image: AssetImage('assets/svg_icons/test.png'),
+                //   fit: BoxFit.cover,
+                // ),
+              ),
+              child: NetworkImageWidget(
+                imageUrl: productEntity.thumbnail!,
+                width: 80,
+                height: 80,
+                fit: BoxFit.contain,
               ),
             ),
+
             const SizedBox(
               width: 10,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                LabelText(
-                  text: "iPhone 14",
-                ),
+                LabelText(text: productEntity.brand ?? '' //"iPhone 14",
+                    ),
                 BodyText(
-                  text: "\$60",
+                  text: "\$${productEntity.price}",
                   color: AppPallet.primary,
                   fontSize: 12,
                   fontWeight: FontWeight.w100,
@@ -64,9 +90,16 @@ class FavoritesCard extends StatelessWidget {
             ),
           ],
         ),
-        trailing: Icon(
-          Icons.favorite,
-          color: AppPallet.red,
+        trailing: InkWell(
+          onTap: () {
+            context
+                .read<FavoriteCubit>()
+                .removeFavorite(productEntity as ProductModel);
+          },
+          child: Icon(
+            Icons.favorite,
+            color: AppPallet.red,
+          ),
         ),
       ),
     );

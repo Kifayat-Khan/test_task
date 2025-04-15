@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:test_task/src/core/common/search_cubit/search_cubit.dart';
 import 'package:test_task/src/core/common/widget/app_text.dart';
 import 'package:test_task/src/core/theme/app_pallet.dart';
+import 'package:test_task/src/core/use_case/filter_product.dart';
+import 'package:test_task/src/domain/entity/product_entity.dart';
 import 'package:test_task/src/presentation/cubits/fetch_data_cubit/fetch_data_cubit.dart';
 import 'package:test_task/src/presentation/widget/product_card.dart';
 
@@ -14,6 +17,8 @@ class Product extends StatefulWidget {
 }
 
 class _ProductState extends State<Product> {
+  List<ProductEntity> productList = [];
+  @override
   @override
   void initState() {
     if (widget.categoryUrl != null) {
@@ -24,7 +29,7 @@ class _ProductState extends State<Product> {
     {
       context.read<FetchDataCubit>().fetchProduct();
     }
-
+    context.read<SearchCubit>().cancelSearch();
     super.initState();
   }
 
@@ -46,31 +51,42 @@ class _ProductState extends State<Product> {
             );
           } else if (state is FetchDataAllProducts) {
             return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SmallText(text: "${state.productList.length} results found"),
-                  ListView.builder(
-                    shrinkWrap:
-                        true, // Prevents ListView from taking infinite height
-                    physics:
-                        NeverScrollableScrollPhysics(), // Disables ListView's own scrolling
-                    itemCount: state.productList.length,
-                    itemBuilder: (context, index) {
-                      return ProductCard(
-                        productEntity: state.productList[index],
-                      );
-                    },
-                  ),
-                  // ...List.generate(
-                  //   state.productList.length,
-                  //   (index) {
-                  //     return ProductCard(
-                  //       productEntity: state.productList[index],
-                  //     );
-                  //   },
-                  // ),
-                ],
+              child: BlocBuilder<SearchCubit, SearchState>(
+                builder: (context, searchState) {
+                  final searchText = (searchState as Searched).searchText;
+                  if (searchText != '') {
+                    productList =
+                        filterProductsByText(state.productList, searchText);
+                  } else {
+                    productList = state.productList;
+                  }
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SmallText(text: "${productList.length} results found"),
+                      ListView.builder(
+                        shrinkWrap:
+                            true, // Prevents ListView from taking infinite height
+                        physics:
+                            NeverScrollableScrollPhysics(), // Disables ListView's own scrolling
+                        itemCount: productList.length,
+                        itemBuilder: (context, index) {
+                          return ProductCard(
+                            productEntity: productList[index],
+                          );
+                        },
+                      ),
+                      // ...List.generate(
+                      //   state.productList.length,
+                      //   (index) {
+                      //     return ProductCard(
+                      //       productEntity: state.productList[index],
+                      //     );
+                      //   },
+                      // ),
+                    ],
+                  );
+                },
               ),
             );
           }

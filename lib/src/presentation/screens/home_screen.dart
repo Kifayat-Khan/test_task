@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:test_task/src/presentation/widget/bottom_navbar.dart';
@@ -15,27 +14,26 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: SearchFieldAppBar(
-        title: "Products",
-        isBackVisible: false,
-      ),
-      body: BlocBuilder<HomeTabCubit, HomeTabState>(
-        builder: (context, state) {
-          final tab = (state as HomeTab).tab;
-          if (tab == HomeTabs.category) {
-            return Category();
-          }
-          if (tab == HomeTabs.favorites) {
-            return Favorites();
-          }
-          if (tab == HomeTabs.profile) {
-            return Profile();
-          }
-          return Product();
-        },
-      ),
-      bottomNavigationBar: BottomNavbar(),
+    return BlocBuilder<HomeTabCubit, HomeTabState>(
+      builder: (context, state) {
+        final tab = (state as HomeTab).tab;
+        return Scaffold(
+          appBar: tab != HomeTabs.profile
+              ? SearchFieldAppBar(
+                  title: tab,
+                  isBackVisible: false,
+                )
+              : null,
+          body: tab == HomeTabs.category
+              ? Category()
+              : tab == HomeTabs.favorites
+                  ? Favorites()
+                  : tab == HomeTabs.profile
+                      ? Profile()
+                      : Product(),
+          bottomNavigationBar: BottomNavbar(),
+        );
+      },
     );
   }
 }

@@ -3,6 +3,8 @@ part of 'search_cubit.dart';
 @immutable
 sealed class SearchState {}
 
-final class SearchInitial extends SearchState {}
+final class Searched extends SearchState {
+  final String searchText;
 
-final class Searched extends SearchState {}
+  Searched({required this.searchText});
+}

@@ -34,7 +34,7 @@ class _SearchFieldState extends State<SearchField> {
         //focusNode: focusNode,
         //controller: textEditingController,
         onChanged: (text) {
-          context.read<SearchCubit>().search();
+          context.read<SearchCubit>().search(text);
           if (text.isEmpty) {
             context.read<SearchCubit>().cancelSearch();
           }

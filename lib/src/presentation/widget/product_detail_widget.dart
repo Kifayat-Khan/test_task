@@ -1,16 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:test_task/init_dependency.dart';
 import 'package:test_task/src/core/common/widget/app_text.dart';
 import 'package:test_task/src/core/extenstions/context_extention.dart';
 import 'package:test_task/src/core/theme/app_pallet.dart';
+import 'package:test_task/src/data/data_source/product_local_data_source.dart';
+import 'package:test_task/src/data/model/product_model.dart';
 import 'package:test_task/src/domain/entity/product_entity.dart';
+import 'package:test_task/src/presentation/cubits/favorite_cubit/favorite_cubit.dart';
 import 'package:test_task/src/presentation/widget/rate_widget.dart';
 
-class ProductDetailsWidget extends StatelessWidget {
+class ProductDetailsWidget extends StatefulWidget {
   const ProductDetailsWidget({
     super.key,
     required this.productEntity,
   });
   final ProductEntity productEntity;
+
+  @override
+  State<ProductDetailsWidget> createState() => _ProductDetailsWidgetState();
+}
+
+class _ProductDetailsWidgetState extends State<ProductDetailsWidget> {
+  bool isFavorite = false;
+  @override
+  void initState() {
+    isFavorite = serviceLocator<ProductLocalDataSource>()
+        .isFavorite(widget.productEntity.id.toString());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,29 +49,49 @@ class ProductDetailsWidget extends StatelessWidget {
                 fontSize: context.width(0.04),
                 fontWeight: FontWeight.bold,
               ),
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: Icon(
-                  Icons.favorite_outline_sharp,
-                  weight: 0.1,
-                  size: context.width(0.07),
-                  color: AppPallet.primary,
-                ),
+              BlocBuilder<FavoriteCubit, FavoriteState>(
+                builder: (context, state) {
+                  return InkWell(
+                    onTap: () {
+                      if (isFavorite) {
+                        context.read<FavoriteCubit>().removeFavorite(
+                            widget.productEntity as ProductModel);
+                        isFavorite = false;
+                      } else {
+                        context.read<FavoriteCubit>().storeFavorite(
+                            widget.productEntity as ProductModel);
+                        isFavorite = true;
+                      }
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: Icon(
+                        Icons.favorite_outline_sharp,
+                        weight: 0.1,
+                        size: context.width(0.07),
+                        color: isFavorite
+                            ? AppPallet.failureColor
+                            : AppPallet.primary,
+                      ),
+                    ),
+                  );
+                },
               ),
             ],
           ),
           SizedBox(height: 8.0),
           // Product Details
-          _RowWidget(label: "Name", value: "${productEntity.title}"),
-          _RowWidget(label: "Price", value: "\$${productEntity.price}"),
-          _RowWidget(label: "Category", value: "${productEntity.category}"),
-          _RowWidget(label: "Brand", value: "${productEntity.brand}"),
+          _RowWidget(label: "Name", value: "${widget.productEntity.title}"),
+          _RowWidget(label: "Price", value: "\$${widget.productEntity.price}"),
+          _RowWidget(
+              label: "Category", value: "${widget.productEntity.category}"),
+          _RowWidget(label: "Brand", value: "${widget.productEntity.brand}"),
           _RowWidget(
             label: "Rating",
-            value: "${productEntity.rating}",
+            value: "${widget.productEntity.rating}",
             rateWidget: RatingWidget(rate: 5),
           ),
-          _RowWidget(label: "Stock", value: "${productEntity.stock}"),
+          _RowWidget(label: "Stock", value: "${widget.productEntity.stock}"),
           SizedBox(height: 8.0),
           // Description
           BodyText(
@@ -64,7 +102,7 @@ class ProductDetailsWidget extends StatelessWidget {
 
           SizedBox(height: 8.0),
           SmallText(
-            text: "${productEntity.description}",
+            text: "${widget.productEntity.description}",
             fontSize: context.width(0.03),
             color: AppPallet.primary,
             fontWeight: FontWeight.w100,
